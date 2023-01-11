@@ -506,7 +506,8 @@ static __strong NSData *CRLFCRLF;
     CFHTTPMessageSetHeaderFieldValue(request, CFSTR("Host"), (__bridge CFStringRef)(_url.port ? [NSString stringWithFormat:@"%@:%@", _url.host, _url.port] : _url.host));
         
     NSMutableData *keyBytes = [[NSMutableData alloc] initWithLength:16];
-    SecRandomCopyBytes(kSecRandomDefault, keyBytes.length, keyBytes.mutableBytes);
+    int ignore = SecRandomCopyBytes(kSecRandomDefault, keyBytes.length, keyBytes.mutableBytes);
+    ignore = ignore;
     
     if ([keyBytes respondsToSelector:@selector(base64EncodedStringWithOptions:)]) {
         _secKey = [keyBytes base64EncodedStringWithOptions:0];
@@ -649,6 +650,8 @@ static __strong NSData *CRLFCRLF;
             break;
         case NSURLNetworkServiceTypeVoice:
             networkServiceType = NSStreamNetworkServiceTypeVoice;
+            break;
+        default:
             break;
     }
     
@@ -1482,7 +1485,8 @@ static const size_t SRFrameHeaderOverhead = 32;
         }
     } else {
         uint8_t *mask_key = frame_buffer + frame_buffer_size;
-        SecRandomCopyBytes(kSecRandomDefault, sizeof(uint32_t), (uint8_t *)mask_key);
+        int ignore = SecRandomCopyBytes(kSecRandomDefault, sizeof(uint32_t), (uint8_t *)mask_key);
+        ignore = ignore;
         frame_buffer_size += sizeof(uint32_t);
         
         // TODO: could probably optimize this with SIMD
